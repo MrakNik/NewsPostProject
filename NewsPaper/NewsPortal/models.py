@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.utils import timezone
 
 
 class Author(models.Model):
@@ -21,12 +23,6 @@ class Author(models.Model):
         return f'{self.user.username}'
 
 
-class Category(models.Model):
-    """Категории новостей/статей - темы, которые они отражают (спорт, политика, образование и т.д.).
-    Имеет единственное поле: название категории. Поле должно быть уникальным"""
-    category_name = models.CharField(max_length=255, unique=True)
-
-
 class Post(models.Model):
     """ Эта модель должна содержать в себе статьи и новости, которе создают пользователи.
     Каждый объект может иметь одну или несколько категорий."""
@@ -42,7 +38,7 @@ class Post(models.Model):
     position = models.CharField(max_length=2,
                                 choices=POSITIONS,
                                 default=article)
-    time_in = models.DateTimeField(auto_now_add=True)
+    time_in = models.DateTimeField(default=timezone.now)
     category_post = models.ManyToManyField('Category', through='PostCategory')
     post_title = models.CharField(max_length=255)
     post_text = models.TextField()
@@ -60,6 +56,21 @@ class Post(models.Model):
 
     def preview(self):
         return f'{self.post_text[0:125]}...'
+
+    def __str__(self):
+        return f'{self.name.title()}: {self.description[:10]}'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
+
+
+class Category(models.Model):
+    """Категории новостей/статей - темы, которые они отражают (спорт, политика, образование и т.д.).
+    Имеет единственное поле: название категории. Поле должно быть уникальным"""
+    category_name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.category_name
 
 
 class PostCategory(models.Model):

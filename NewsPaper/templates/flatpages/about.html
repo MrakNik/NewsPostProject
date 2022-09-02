@@ -1,0 +1,26 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+{{ flatpage.content }}
+{% endblock title %}
+
+{% block content %}
+   <p style="text-align: center;"><em>Разные шрифты</em></p>
+<h1 style="text-align: center;">разные размеры</h1>
+<p style="text-align: center;"><span style="text-decoration: underline;"><span style="color: #ff0000; text-decoration: underline;">все здесь разное!</span></span></p>
+<table style="width: 165.828px; margin-left: auto; margin-right: auto;">
+<tbody>
+<tr style="text-align: center;">
+<td style="width: 66px;">даже</td>
+<td style="width: 102.828px; text-align: center;">
+<p>есть</p>
+</td>
+</tr>
+<tr>
+<td style="width: 66px; text-align: center;">эта&nbsp;</td>
+<td style="width: 102.828px; text-align: center;">таблица</td>
+</tr>
+</tbody>
+</table>
+{{ flatpage.content }}
+{% endblock content %}
