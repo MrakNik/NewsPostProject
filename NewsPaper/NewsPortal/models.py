@@ -44,6 +44,13 @@ class Post(models.Model):
     post_text = models.TextField()
     post_rating = models.IntegerField(default=0)
 
+     # Внутренний класс (Мета класс), который используется для определения модели.
+    class Meta:
+        # Настройка отображения имени модели в админ панели (ед число)
+        verbose_name = 'Публикация'
+        # Настройка отображения имени модели в админ панели (множ число)
+        verbose_name_plural = 'Публикации'
+
     def like(self, post_rating=1):
         self.post_rating = post_rating
         self.post_rating += 1
@@ -58,7 +65,7 @@ class Post(models.Model):
         return f'{self.post_text[0:125]}...'
 
     def __str__(self):
-        return f'{self.name.title()}: {self.description[:10]}'
+        return f'{self.post_title}: {self.post_text[:10]}'
 
     def get_absolute_url(self):
         return reverse('post_detail', args=[str(self.id)])
@@ -68,15 +75,38 @@ class Category(models.Model):
     """Категории новостей/статей - темы, которые они отражают (спорт, политика, образование и т.д.).
     Имеет единственное поле: название категории. Поле должно быть уникальным"""
     category_name = models.CharField(max_length=255, unique=True)
+    subscribers = models.ManyToManyField(User, through='CategorySubscribers')
+
+    # Внутренний класс (Мета класс), который используется для определения модели.
+    class Meta:
+        # Настройка отображения имени модели в админ панели (ед число)
+        verbose_name = 'Категория'
+        # Настройка отображения имени модели в админ панели (множ число)
+        verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.category_name
+        return f'{self.category_name}'
+
+
+class CategorySubscribers(models.Model):
+    # subscriber = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("category", "user")
+
+    def __str__(self):
+        return f'{self.user.username}: {self.category.category_name}'
 
 
 class PostCategory(models.Model):
     """Промежуточная модель для связи <многие ко многим>"""
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.post.post_title}: {self.category.category_name}'
 
 
 class Comment(models.Model):
@@ -89,6 +119,13 @@ class Comment(models.Model):
     time_in_comm = models.DateTimeField(auto_now_add=True)
     comment_rating = models.IntegerField(default=0)
 
+        # Внутренний класс (Мета класс), который используется для определения модели.
+    class Meta:
+        # Настройка отображения имени модели в админ панели (ед число)
+        verbose_name = 'Комментарий'
+        # Настройка отображения имени модели в админ панели (множ число)
+        verbose_name_plural = 'Комментарии'
+
     def like(self, comment_rating=1):
         self.comment_rating = comment_rating
         self.comment_rating += 1
@@ -98,3 +135,6 @@ class Comment(models.Model):
         self.comment_rating = comment_rating
         self.comment_rating -= 1
         self.save()
+
+    def __str__(self):
+        return f'{self.user.username}: {self.post.post_title}'

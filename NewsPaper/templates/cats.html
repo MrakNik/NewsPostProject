@@ -1,0 +1,18 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+<!-- Название у нас будет Post -->
+{% block title %}
+Categories
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
+{% block content %}
+<h1><strong>Разделы:</strong></h1><br>
+    <table>
+        {% for elem in cats %}
+        <tr>
+           <a href="{% url 'category_detail' pk=elem.pk %}"> {{ elem.category_name }}</a><br>
+       </tr>
+       {% endfor %}
+   </table>
+{% endblock content %}
