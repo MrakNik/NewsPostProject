@@ -11,10 +11,10 @@ Subscription
   <hr>
 {% if is_not_subscribe %}
 <h4> Если вы хотите получать сообщение и всегда быть в курсе появления новых публикаций в данной категории, нажмите кнопку "Подписаться" </h4>
-<button><a href="add_subscribe/?pk={{ category.id }}">Подписаться</a></button>
+<button><a href="http://127.0.0.1:8000/posts/category/{{ category.id }}/add_subscribe/">Подписаться</a></button>
 {% else %}
 <h4>Вы уже подписаны на эту категорию.</h4>
 <h4>Если больше не хотите получать уведомление о новых публикациях, нажмите на кнопку "Отписаться".</h4>
-<button><a href="del_subscribe/?pk={{ category.id }}">Отписаться</a></button>
+<button><a href="http://127.0.0.1:8000/posts/category/{{ category.id }}/del_subscribe/">Отписаться</a></button>
 {% endif %}
 {% endblock content %}

@@ -110,11 +110,9 @@ class CategoryList(ListView):
         return context
 
 
-class Category(DetailView):
+class CategoryDetail(DetailView):
     model = Category
     template_name = 'category.html'
-    context_object_name = 'category'
-    success_url = '/posts/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # общаемся к содержимому контекста нашего представления
@@ -129,14 +127,18 @@ class Category(DetailView):
         return context
 
 
-
 @login_required
-def add_subscribe(request, **kwargs):
+def add_subscribe(request, *args, **kwargs):
     # получаем первичный ключ выбранной категории
-    pk = request.GET.get('pk', )
-    print('Пользователь', request.user, 'добавлен в подписчики категории:', Category.objects.get(pk=pk))
+    pkr = request.GET.get('pk', )
+    print('Пользователь', request.user, 'добавлен в подписчики категории:', )
     # добавляем в выбранную категорию, в поле "подписчики" пользователя, который авторизован и делает запрос
-    Category.objects.get(pk=pk).subscribers.add(request.user)
+    # Category.objects.get(id=pk).subscribers.add(request.user)
+    categorySubscribers = CategorySubscribers(
+        category_id = category.subscribersid,
+        user= request.user,
+    )
+    categorySubscribers.save()
     # возвращаемся на страницу со списком категорий
     return redirect('/posts/cats')
 

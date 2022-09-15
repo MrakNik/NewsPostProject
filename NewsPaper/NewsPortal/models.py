@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+
 from django.urls import reverse
 from django.utils import timezone
 
@@ -10,6 +11,7 @@ class Author(models.Model):
     user_rating = models.IntegerField(default=0)
 
     def update_rating(self):
+        objects = models.Manager()
         self.user_rating = 0
         for post in Post.objects.filter(who_author__user=self.user):
             self.user_rating += post.post_rating * 3
@@ -44,7 +46,7 @@ class Post(models.Model):
     post_text = models.TextField()
     post_rating = models.IntegerField(default=0)
 
-     # Внутренний класс (Мета класс), который используется для определения модели.
+    # Внутренний класс (Мета класс), который используется для определения модели.
     class Meta:
         # Настройка отображения имени модели в админ панели (ед число)
         verbose_name = 'Публикация'
@@ -119,7 +121,7 @@ class Comment(models.Model):
     time_in_comm = models.DateTimeField(auto_now_add=True)
     comment_rating = models.IntegerField(default=0)
 
-        # Внутренний класс (Мета класс), который используется для определения модели.
+    # Внутренний класс (Мета класс), который используется для определения модели.
     class Meta:
         # Настройка отображения имени модели в админ панели (ед число)
         verbose_name = 'Комментарий'

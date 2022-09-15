@@ -46,7 +46,7 @@ def email_task(subscriber_username, subscriber_email, html_content):
 def weekly_email_task(subscriber_username, subscriber_email, html_content):
     msg = EmailMultiAlternatives(
         subject=f'Здравствуй, {subscriber_username}, новые статьи за прошлую неделю в вашем разделе!',
-        from_email='djangobot1@yandex.ru',
+        from_email='ogr.nick@yandex.ru',
         to=[subscriber_email]
     )
 
