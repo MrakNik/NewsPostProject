@@ -20,28 +20,31 @@ def send_emails_on_signal(sender, created, instance, **kwargs):
     # запускаем функцию представление
     sending_emails_to_subscribers(instance)
 
+
 # Функция обработчик для сигнала "post_save"
 # создаём функцию обработчик с параметрами под регистрацию сигнала
 # запускает выполнение кода при каком-либо действии пользователя, в нашем случае -
 # сохранение в БД модели Post записи
-# @receiver(post_save, sender=Post)
-# def send_sub_mail(sender, instance, created, **kwargs):
-#     global subscriber
-#     sub_title = instance.title
-#     sub_text = instance.text
-#     category = Category.objects.get(pk=Post.objects.get(pk=instance.pk).post_category.pk)
-#     subscribers = category.subscribers.all()
-#     post = instance
-#
-#     for subscriber in subscribers:
-#         html_content = render_to_string(
-#             'news/mail.html', {'user': subscriber, 'title': sub_title, 'text': sub_text[:50], 'post': post})
-#
-#         msg = EmailMultiAlternatives(
-#             subject=f'Здравствуй, {subscriber.username}. Новая статья в вашем разделе!',
-#             from_email='djangobot1@yandex.ru',
-#             to=[subscriber.email]
-#         )
-#         msg.attach_alternative(html_content, 'text/html')
-#         msg.send()
-#     return redirect('/posts/')
+@receiver(post_save, sender=Post)
+def send_sub_mail(sender, instance, created, **kwargs):
+    global subscriber
+    sub_title = instance.post_title
+    sub_text = instance.post_text
+    for p in Post.objects.get(pk=instance.pk).category_post.all():
+        # получаем список подписчиков категории
+        category = Category.objects.get(pk=p)
+        subscribers = category.subscribers.all()
+        post = instance
+
+        for subscriber in subscribers:
+            html_content = render_to_string(
+                'news/mail.html', {'user': subscriber, 'title': sub_title, 'text': sub_text[:50], 'post': post})
+
+            msg = EmailMultiAlternatives(
+                subject=f'Здравствуй, {subscriber.username}. Новая статья в вашем разделе!',
+                from_email='ogr.nick@yandex.ru',
+                to=[subscriber.email]
+            )
+            msg.attach_alternative(html_content, 'text/html')
+            msg.send()
+    return redirect('/posts/')

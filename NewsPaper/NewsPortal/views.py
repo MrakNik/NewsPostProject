@@ -38,7 +38,7 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 
-class ArticleCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class ArticleCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
@@ -49,7 +49,7 @@ class ArticleCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class NewsCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class NewsCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
@@ -130,10 +130,14 @@ class CategoryDetail(DetailView):
 @login_required
 def add_subscribe(request, *args, **kwargs):
     # получаем первичный ключ выбранной категории
-    pkr = request.GET.get('pk', )
-    print('Пользователь', request.user, 'добавлен в подписчики категории:',Category.objects.get(pk=pk) )
-    # добавляем в выбранную категорию, в поле "подписчики" пользователя, который авторизован и делает запрос
-    Category.objects.get(id=pk).subscribers.add(request.user)
+    print(kwargs['pk'])
+    category_ = Category.objects.get(pk=kwargs['pk'])
+    print('Пользователь', request.user, 'добавлен в подписчики категории:', category_)
+    categorySubscribers = CategorySubscribers(
+        category=category_,
+        user=request.user,
+    )
+    categorySubscribers.save()
     # возвращаемся на страницу со списком категорий
     return redirect('/posts/cats')
 
@@ -143,7 +147,7 @@ def add_subscribe(request, *args, **kwargs):
 @login_required
 def del_subscribe(request, **kwargs):
     # получаем первичный ключ выбранной категории
-    pk = request.GET.get('pk', )
+    pk = kwargs['pk']
     print('Пользователь', request.user, 'удален из подписчиков категории:', Category.objects.get(pk=pk))
     # удаляем в выбранной категории, из поля "подписчики" пользователя, который авторизован и делает запрос
     Category.objects.get(pk=pk).subscribers.remove(request.user)
@@ -155,20 +159,21 @@ def sending_emails_to_subscribers(instance):
     sub_text = instance.post_text
     sub_title = instance.post_title
     # получаем нужный объект модели Категория через рк Пост
-    category = Category.objects.get(pk=Post.objects.get(pk=instance.pk).category_post.pk)
-    # получаем список подписчиков категории
-    subscribers = category.subscribers.all()
+    for p in Post.objects.get(pk=instance.pk).category_post.all():
+        # получаем список подписчиков категории
+        category = Category.objects.get(pk=p)
+        subscribers = category.subscribers.all()
 
-    # проходимся по всем подписчикам в списке
-    for subscriber in subscribers:
-        # создание переменных, которые необходимы для таски
-        subscriber_username = subscriber.username
-        subscriber_useremail = subscriber.email
-        html_content = render_to_string('news/mail.html',
-                                        {'user': subscriber,
-                                         'title': sub_title,
-                                         'text': sub_text[:50],
-                                         'post': instance})
-        # функция для таски, передаем в нее все что нужно для отправки подписчикам письма
-        email_task(subscriber_username, subscriber_useremail, html_content)
+        # проходимся по всем подписчикам в списке
+        for subscriber in subscribers:
+            # создание переменных, которые необходимы для таски
+            subscriber_username = subscriber.username
+            subscriber_useremail = subscriber.email
+            html_content = render_to_string('news/mail.html',
+                                            {'user': subscriber,
+                                             'title': sub_title,
+                                             'text': sub_text[:50],
+                                             'post': instance})
+            # функция для таски, передаем в нее все что нужно для отправки подписчикам письма
+            email_task(subscriber_username, subscriber_useremail, html_content)
     return redirect('/posts/')
