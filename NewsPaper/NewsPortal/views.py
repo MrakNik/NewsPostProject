@@ -131,14 +131,9 @@ class CategoryDetail(DetailView):
 def add_subscribe(request, *args, **kwargs):
     # получаем первичный ключ выбранной категории
     pkr = request.GET.get('pk', )
-    print('Пользователь', request.user, 'добавлен в подписчики категории:', )
+    print('Пользователь', request.user, 'добавлен в подписчики категории:',Category.objects.get(pk=pk) )
     # добавляем в выбранную категорию, в поле "подписчики" пользователя, который авторизован и делает запрос
-    # Category.objects.get(id=pk).subscribers.add(request.user)
-    categorySubscribers = CategorySubscribers(
-        category_id = category.subscribersid,
-        user= request.user,
-    )
-    categorySubscribers.save()
+    Category.objects.get(id=pk).subscribers.add(request.user)
     # возвращаемся на страницу со списком категорий
     return redirect('/posts/cats')
 
