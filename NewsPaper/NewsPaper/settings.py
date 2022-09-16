@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'fpages',
-    'NewsPortal',
+    'NewsPortal.apps.NewsportalConfig',
     'django_filters',
     'sign',
     'protect',
@@ -152,10 +152,12 @@ ACCOUNT_FORMS = {'signup': 'sign.models.BaseSignupForm'}
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'ogr.nick@yandex.ru'
+EMAIL_HOST_USER = 'ogr.nick'
 EMAIL_HOST_PASSWORD = 'test54321test'
 EMAIL_USE_SSL = True
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = False
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 SERVER_EMAIL = 'ogr.nick@yandex.ru'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER + '@yandex.ru'
 # 'ogr.nick@yandex.ru'
@@ -166,4 +168,7 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 # если задача не выполняется за 25 секунд, то она автоматически снимается, можно больше, но будет медленно работать
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
-
+ADMINS = [
+    ('admin', 'ogyr.nekit@mail.ru'),
+    # список всех админов в формате ('имя', 'их почта')
+]

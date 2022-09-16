@@ -34,23 +34,22 @@ def news_sender():
         news_from_each_category = []
 
         # определение номера прошлой недели
-        week_number_last = datetime.now().isocalendar()[1]-1
+        week_number_last = datetime.now().isocalendar()[1] - 1
 
         # Второй цикл - из первого цикла получим рк категории, и подставляем его в запрос, в первый фильтр, во второй
         # фильтр подставляем значение предыдущей недели, то есть показать статьи с датой создания предыдущей недели
         for post in Post.objects.filter(category_post_id=category.id,
                                         time_in__week=week_number_last).values('pk',
-                                                                                        'title',
-                                                                                        'time_of_creation',
-                                                                                        'post_category_id__name'):
-
+                                                                               'post_title',
+                                                                               'time_in',
+                                                                               'category_post_id__name'):
             # преобразуем дату в человеческий вид - убираем секунды и прочее
-            date_format = post.get("time_of_creation").strftime("%d/%m/%Y")
+            date_format = post.get("time_in").strftime("%d/%m/%Y")
 
             # из данных запроса выдираем нужные нам поля (time_of_creation - для проверки выводится),
             # и из значений данных полей формируем заголовок и реальную ссылку на переход на статью на наш сайт
-            post = (f' http://127.0.0.1:8000/posts/{post.get("pk")}, Заголовок: {post.get("title")}, '
-                   f' Категория: {post.get("post_category_id__name")}, Дата создания: {date_format}')
+            post = (f' http://127.0.0.1:8000/posts/{post.get("pk")}, Заголовок: {post.get("post_title")}, '
+                    f' Категория: {post.get("category_post_id__name")}, Дата создания: {date_format}')
 
             # каждую строчку помещаем в список новостей
             news_from_each_category.append(post)
@@ -68,7 +67,7 @@ def news_sender():
             html_content = render_to_string(
                 'news/mail_sender.html', {'user': subscriber,
                                           'text': news_from_each_category,
-                                          'category_name': category.name,
+                                          'category_name': category.category_name,
                                           'week_number_last': week_number_last})
 
             weekly_email_task(subscriber_username, subscriber_email, html_content)

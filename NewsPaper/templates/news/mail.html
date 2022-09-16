@@ -7,9 +7,9 @@
 </head>
 <body>
     <h1> Новая статья от автора {{ post.who_author }} из категории {{ post.category_post }}</h1>
-    <h2>Заголовок: {{ post_title }} </h2>
+    <h2>Заголовок: {{ title }} </h2>
     <h3>Текст:</h3>
-    <p> {{ post_text }} </p>
+    <p> {{ text }} </p>
 
     <h3>Ссылка:</h3>
     <p><a href="http://127.0.0.1:8000{{ post.get_absolute_url }}">Перейти на статью</a></p>
