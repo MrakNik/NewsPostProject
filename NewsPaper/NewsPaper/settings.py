@@ -150,17 +150,17 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_FORMS = {'signup': 'sign.models.BaseSignupForm'}
 
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'ogr.nick'
-EMAIL_HOST_PASSWORD = 'test54321test'
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-SERVER_EMAIL = 'ogr.nick@yandex.ru'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER + '@yandex.ru'
-# 'ogr.nick@yandex.ru'
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'ogyr.nekit@mail.ru'
+EMAIL_HOST_PASSWORD = 'Lvp3spPm5zE35f1d6tpR'
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+SERVER_EMAIL = 'ogyr.nekit@mail.ru'
+
+# 'ogyr.nekit@mail.ru'
 
 # формат даты, которую будет воспринимать наш задачник (вспоминаем модуль по фильтрам)
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
@@ -172,3 +172,10 @@ ADMINS = [
     ('admin', 'ogyr.nekit@mail.ru'),
     # список всех админов в формате ('имя', 'их почта')
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379'  # указывает на URL брокера сообщений (Redis).
+# По умолчанию он находится на порту 6379.
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'  # указывает на хранилище результатов выполнения задач.
+CELERY_ACCEPT_CONTENT = ['application/json']  # допустимый формат данных.
+CELERY_TASK_SERIALIZER = 'json'  # метод сериализации задач.
+CELERY_RESULT_SERIALIZER = 'json'  # метод сериализации результатов.

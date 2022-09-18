@@ -18,10 +18,15 @@ from django_apscheduler.models import DjangoJobExecution
 
 from datetime import datetime
 
-from NewsPaper.NewsPortal.models import Category, Post
-from NewsPaper.NewsPortal.tasks import weekly_email_task
+from NewsPortal.models import Category, Post
+from NewsPortal.tasks import weekly_email_task
 
 logger = logging.getLogger(__name__)
+
+
+def my_job():
+    #  Your job processing logic here...
+    print('hello from job')
 
 
 # рассылка подписчикам новых новостей за прошлую неделю по определенным категориям новостей
