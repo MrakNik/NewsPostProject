@@ -1,9 +1,10 @@
 from django.core.management.base import BaseCommand, CommandError
-from news.models import Post, Category
+
+from NewsPaper.NewsPortal.models import Category, Post
 
 
 class Command(BaseCommand):
-    help = 'Подсказка вашей команды'
+    help = 'Удаление постов определенной категории'
 
     def add_arguments(self, parser):
         parser.add_argument('category', type=str)
